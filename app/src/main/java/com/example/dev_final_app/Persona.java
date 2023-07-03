@@ -19,6 +19,12 @@ public class Persona {
 
     private LocalDate nacimiento;
 
+    private ContainerUsers likesEnviados;
+
+    private ContainerUsers likesRecibidos;
+
+    private ContainerUsers likesMutuos;
+
 
     public Persona(String nombre, int genero, int orientacionSex, int[] rangoEdad, int año, int mes, int dia) {
         this.nombre = nombre;
@@ -27,6 +33,9 @@ public class Persona {
         this.genero = genero;
         this.orientacionSex = orientacionSex;
         this.rangoEdad = rangoEdad;
+        likesEnviados = new ContainerUsers();
+        likesRecibidos = new ContainerUsers();
+        likesMutuos = new ContainerUsers();
 
     }
 
