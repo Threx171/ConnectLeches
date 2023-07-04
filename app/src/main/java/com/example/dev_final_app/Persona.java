@@ -17,6 +17,7 @@ public class Persona {
 
     private LocalDate nacimiento;
 
+    private String contraseña;
     private ContainerUsers likesEnviados;
 
     private ContainerUsers likesRecibidos;
