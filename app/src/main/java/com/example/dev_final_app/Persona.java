@@ -13,7 +13,7 @@ public class Persona {
 
     private int orientacionSex;
 
-    private int [] rangoEdad = {0,0};
+    //private int [] rangoEdad = {0,0};
 
     private LocalDate nacimiento;
 
@@ -24,7 +24,11 @@ public class Persona {
 
     private ContainerUsers likesMutuos;
 
+    public Persona() {
 
+    }
+
+    /*
     public Persona(String nombre, int genero, int orientacionSex, int[] rangoEdad, int año, int mes, int dia) {
         this.nombre = nombre;
         edad = calcEdad(año, mes, dia);
@@ -35,6 +39,7 @@ public class Persona {
         likesRecibidos = new ContainerUsers();
         likesMutuos = new ContainerUsers();
     }
+    */
 
     public String getNombre() {
         return nombre;
@@ -75,7 +80,7 @@ public class Persona {
     public void setOrientacionSex(int orientacionSex) {
         this.orientacionSex = orientacionSex;
     }
-
+    /*
     public int[] getRangoEdad() {
         return rangoEdad;
     }
@@ -83,6 +88,7 @@ public class Persona {
     public void setRangoEdad(int[] rangoEdad) {
         this.rangoEdad = rangoEdad;
     }
+    */
 
     public LocalDate getNacimiento() {
         return nacimiento;
@@ -111,7 +117,5 @@ public class Persona {
         return diff;
 
     }
-
-
 
 }
