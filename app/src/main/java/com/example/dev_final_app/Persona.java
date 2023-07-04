@@ -44,6 +44,13 @@ public class Persona {
         this.nombre = nombre;
     }
 
+    public String getContraseña() {
+        return contraseña;
+    }
+
+    public void setContraseña(String contraseña) {
+        this.contraseña = contraseña;
+    }
 
     public int getEdad() {
         return edad;
