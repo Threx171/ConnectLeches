@@ -5,8 +5,6 @@ import java.util.Calendar;
 
 public class Persona {
 
-
-
     private String nombre;
 
     private int edad;
@@ -28,7 +26,6 @@ public class Persona {
 
     public Persona(String nombre, int genero, int orientacionSex, int[] rangoEdad, int año, int mes, int dia) {
         this.nombre = nombre;
-
         edad = calcEdad(año, mes, dia);
         this.genero = genero;
         this.orientacionSex = orientacionSex;
@@ -36,11 +33,7 @@ public class Persona {
         likesEnviados = new ContainerUsers();
         likesRecibidos = new ContainerUsers();
         likesMutuos = new ContainerUsers();
-
     }
-
-
-
 
     public String getNombre() {
         return nombre;
