@@ -1,8 +1,12 @@
 package com.example.dev_final_app.registro;
 
+import static android.content.ContentValues.TAG;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,7 +15,11 @@ import android.widget.Toast;
 
 import com.example.dev_final_app.Persona;
 import com.example.dev_final_app.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -24,7 +32,8 @@ public class Registro extends AppCompatActivity {
     private RadioButton hombre, mujer, hombre_trans, mujer_trans, pre_hombre, pre_mujer, pre_bi;
     private Button btnContinuar;
     private Persona newUser;
-    private DatabaseReference ddbb;
+    private FirebaseDatabase ddbb = FirebaseDatabase.getInstance("https://datingbbdd-default-rtdb.europe-west1.firebasedatabase.app");
+    private DatabaseReference usersRef = ddbb.getReference("Users");
     private FirebaseAuth mAuth;
 
     @Override
@@ -54,72 +63,64 @@ public class Registro extends AppCompatActivity {
 
         //Button Continuar
         btnContinuar = (Button) findViewById(R.id.button);
-
-        /*
-        Lo comento porque soy subnormal y lo he hecho en tu rama :)
-
-        //Referencia a la base de datos
+        //mAuth sera la variable que enchufará el metodo de autenticacion de Firebase
         mAuth = FirebaseAuth.getInstance();
-        ddbb = FirebaseDatabase.getInstance("https://datingbbdd-default-rtdb.europe-west1.firebasedatabase.app").getReference().child("Usuario");
-
-        //Este objeto es el que llevara los datos a la BD
+        //Objeto newUser para rellenar los datos del usuario en la BD
         newUser = new Persona();
-
-        //Metemos listener al boton de continuar, para que meta el usuario con sus datos al clicar
+        //Al clicar en el boton continuar se enviaran los datos si son correctos
         btnContinuar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    //Seteamos datos con las variables recogidas
-                    newUser.setNombre(nom.getText().toString());
-                    //Comprobacion provisional, si mes es inferior a 1 o superior a 12,
-                    //lanzar excepcion
-                    newUser.setContraseña(pass.getText().toString());
-                    if (Integer.parseInt(mes.getText().toString()) > 12 ||
-                        Integer.parseInt(mes.getText().toString()) < 1) {
-                        throw new Exception();
-                    }
-                    //Calculamos edad
-                    edad = newUser.calcEdad(
-                            Integer.parseInt(año.getText().toString()),
-                            Integer.parseInt(mes.getText().toString()),
-                            Integer.parseInt(dia.getText().toString())
-                    );
-                    newUser.setEdad(edad);
-                    //Miramos el genero con el que se identifica el usuario
-                    if (hombre.isChecked()) {
-                        newUser.setGenero(0);
-                    } else if (mujer.isChecked()) {
-                        newUser.setGenero(1);
-                    } else if (hombre_trans.isChecked()) {
-                        newUser.setGenero(2);
-                    } else if (mujer_trans.isChecked()) {
-                        newUser.setGenero(3);
-                    }
-                    //Miramos la preferencia sexual del usuario
-                    if (pre_hombre.isChecked()) {
-                        newUser.setOrientacionSex(0);
-                    } else if (pre_mujer.isChecked()) {
-                        newUser.setOrientacionSex(1);
-                    } else if (pre_bi.isChecked()) {
-                        newUser.setOrientacionSex(2);
-                    }
-                    //Enviamos datos a la BD
-                    ddbb.push().setValue(newUser);
-                    //Volvemos a la pantalla inicial
-                    setContentView(R.layout.activity_main);
-                } catch (Exception e) {
-                    Toast.makeText(getApplicationContext(),
-                            "Los datos no son válidos",
-                            Toast.LENGTH_LONG).show();
-                }
+                mAuth.createUserWithEmailAndPassword(nom.getText().toString(),
+                        pass.getText().toString()).addOnCompleteListener(Registro.this,
+                        new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    //Si se crea el usuario correctamente, mostrarlo en consola
+                                    Log.d(TAG, "createUserWithEmail:success");
+                                    FirebaseUser user = mAuth.getCurrentUser();
+                                    //Rellenar datos del usuario nuevo en la base de datos
+                                    String uid = user.getUid();//El uid es la id que se genera con la cuenta de correo
+                                    DatabaseReference userDataRef = usersRef.child(uid);
+                                    //Calculamos edad
+                                    edad = newUser.calcEdad(
+                                            Integer.parseInt(año.getText().toString()),
+                                            Integer.parseInt(mes.getText().toString()),
+                                            Integer.parseInt(dia.getText().toString())
+                                    );
+                                    //Miramos el genero con el que se identifica el usuario
+                                    if (hombre.isChecked()) {
+                                        userDataRef.child("Genero").setValue(0);
+                                    } else if (mujer.isChecked()) {
+                                        userDataRef.child("Genero").setValue(1);
+                                    } else if (hombre_trans.isChecked()) {
+                                        userDataRef.child("Genero").setValue(2);
+                                    } else if (mujer_trans.isChecked()) {
+                                        userDataRef.child("Genero").setValue(3);
+                                    }
+                                    //Miramos la preferencia sexual del usuario
+                                    if (pre_hombre.isChecked()) {
+                                        userDataRef.child("Orientacion").setValue(0);
+                                    } else if (pre_mujer.isChecked()) {
+                                        userDataRef.child("Orientacion").setValue(1);
+                                    } else if (pre_bi.isChecked()) {
+                                        userDataRef.child("Orientacion").setValue(2);
+                                    }
+                                    //Establecemos en la base de datos el resto de datos del usuario
+                                    userDataRef.child("Nombre").setValue(nom.getText().toString());
+                                    userDataRef.child("Edad").setValue(edad);
+                                    userDataRef.child("Contraseña").setValue(pass.getText().toString());
+
+                                }else{
+                                    //Si falla el registro, se muestra
+                                    Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                                    Toast.makeText(Registro.this, "Authentication failed.",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
             }
         });
-
-         */
-
-
-
-
     }
 }
