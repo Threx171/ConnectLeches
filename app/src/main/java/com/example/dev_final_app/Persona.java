@@ -1,7 +1,9 @@
 package com.example.dev_final_app;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class Persona {
 
@@ -13,9 +15,9 @@ public class Persona {
 
     private int orientacionSex;
 
-    //private int [] rangoEdad = {0,0};
+    List <Integer> rangoEdad = new ArrayList <Integer> ();
 
-    private LocalDate nacimiento;
+    private Calendar nacimiento;
 
     private String contraseña;
     private ContainerUsers likesEnviados;
@@ -24,22 +26,11 @@ public class Persona {
 
     private ContainerUsers likesMutuos;
 
+
     public Persona() {
 
     }
 
-    /*
-    public Persona(String nombre, int genero, int orientacionSex, int[] rangoEdad, int año, int mes, int dia) {
-        this.nombre = nombre;
-        edad = calcEdad(año, mes, dia);
-        this.genero = genero;
-        this.orientacionSex = orientacionSex;
-        this.rangoEdad = rangoEdad;
-        likesEnviados = new ContainerUsers();
-        likesRecibidos = new ContainerUsers();
-        likesMutuos = new ContainerUsers();
-    }
-    */
 
     public String getNombre() {
         return nombre;
@@ -80,30 +71,39 @@ public class Persona {
     public void setOrientacionSex(int orientacionSex) {
         this.orientacionSex = orientacionSex;
     }
-    /*
-    public int[] getRangoEdad() {
+
+    public List getRangoEdad() {
         return rangoEdad;
     }
 
-    public void setRangoEdad(int[] rangoEdad) {
-        this.rangoEdad = rangoEdad;
-    }
-    */
+    public void setRangoEdad(int edadMin, int edadMax) {
 
-    public LocalDate getNacimiento() {
+        if(rangoEdad.size() == 0){
+
+            this.rangoEdad.add(edadMin);
+            this.rangoEdad.add(edadMax);
+
+        }
+        else{
+            this.rangoEdad.set(0, edadMin);
+            this.rangoEdad.set(1,edadMax);
+        }
+
+    }
+
+
+    public Calendar getNacimiento() {
         return nacimiento;
     }
 
-    public void setNacimiento(LocalDate nacimiento) {
-        this.nacimiento = nacimiento;
-    }
+
 
 
     public int calcEdad(int año, int mes, int dia){
 
         Calendar fechaActual = Calendar.getInstance();
 
-        Calendar nacimiento = Calendar.getInstance();
+        nacimiento = Calendar.getInstance();
         nacimiento.set(año,mes-1,dia);
 
         int diff = fechaActual.get(Calendar.YEAR) - nacimiento.get(Calendar.YEAR);

@@ -27,7 +27,7 @@ import java.util.Calendar;
 
 public class Registro extends AppCompatActivity {
     //He metido las variables como atributos porque soy asi de chulo
-    private EditText nom, pass, dia, mes, año;
+    private EditText nom, pass, dia, mes, año, mail;
     private int edad;
     private RadioButton hombre, mujer, hombre_trans, mujer_trans, pre_hombre, pre_mujer, pre_bi;
     private Button btnContinuar;
@@ -49,7 +49,7 @@ public class Registro extends AppCompatActivity {
         dia = (EditText) findViewById(R.id.TextData);
         mes = (EditText) findViewById(R.id.TextMes);
         año = (EditText) findViewById(R.id.TextAño);
-
+        mail = (EditText) findViewById(R.id.TextEmail);
         //RadioButtons selector de sexo
         hombre = (RadioButton) findViewById(R.id.menButton);
         mujer = (RadioButton) findViewById(R.id.womenButton);
@@ -71,7 +71,7 @@ public class Registro extends AppCompatActivity {
         btnContinuar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAuth.createUserWithEmailAndPassword(nom.getText().toString(),
+                mAuth.createUserWithEmailAndPassword(mail.getText().toString(),
                         pass.getText().toString()).addOnCompleteListener(Registro.this,
                         new OnCompleteListener<AuthResult>() {
                             @Override
@@ -89,6 +89,7 @@ public class Registro extends AppCompatActivity {
                                             Integer.parseInt(mes.getText().toString()),
                                             Integer.parseInt(dia.getText().toString())
                                     );
+                                    userDataRef.child("pollo").setValue(98);
                                     //Miramos el genero con el que se identifica el usuario
                                     if (hombre.isChecked()) {
                                         userDataRef.child("Genero").setValue(0);
