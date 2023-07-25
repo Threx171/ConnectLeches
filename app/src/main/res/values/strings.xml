@@ -6,4 +6,5 @@
     <string name="title_notifications">Notifications</string>
     <string name="title_activity_feed_pruebas">feedPruebas</string>
     <string name="title_activity_central">central</string>
+    <string name="title_activity_main_app">MainApp</string>
 </resources>

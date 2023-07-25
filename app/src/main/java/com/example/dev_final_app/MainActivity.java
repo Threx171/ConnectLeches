@@ -29,6 +29,8 @@ import java.util.Calendar;
 public  class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private EditText email, password;
+
+
     private Button btnLogin;
 
 
@@ -49,6 +51,7 @@ public  class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     //Login
+
                     mAuth = FirebaseAuth.getInstance();
                     mAuth.signInWithEmailAndPassword(email.getText().toString(),
                                     password.getText().toString())
@@ -59,8 +62,8 @@ public  class MainActivity extends AppCompatActivity {
                                         //Login correcto
                                         Log.w(TAG, "signInWithEmail:success");
                                         FirebaseUser user = mAuth.getCurrentUser();
-                                        Toast.makeText(MainActivity.this, "Autenticación exitosa.",
-                                                Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(MainActivity.this, "Autenticación exitosa.", Toast.LENGTH_SHORT).show();
+                                        initSesion(user);
                                     }else{
                                         //Login no correcto, se muestra mensaje al usuario
                                         Log.w(TAG, "signInWithEmail:failure", task.getException());
@@ -69,7 +72,11 @@ public  class MainActivity extends AppCompatActivity {
                                     }
                                 }
                             });
+
                 }
+
+
+
             });
 
 
@@ -84,6 +91,13 @@ public  class MainActivity extends AppCompatActivity {
 
 
         }
+        public void initSesion(FirebaseUser user){
 
+            Intent i = new Intent(this, interApp.class);
+           i.putExtra("Usuario", user);
+            startActivity(i);
+
+
+        }
     }
 
